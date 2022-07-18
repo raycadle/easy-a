@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+#------------------------------------------------
+# ███████╗ █████╗ ███████╗██╗   ██╗       █████╗ 
+# ██╔════╝██╔══██╗██╔════╝██║   ██║      ██╔══██╗
+# █████╗  ███████║███████╗╚██████╔╝█████╗███████║
+# ██╔══╝  ██╔══██║╚════██║ ╚═██╔═╝ ╚════╝██╔══██║
+# ███████╗██║  ██║███████║   ██║         ██║  ██║
+# ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝         ╚═╝  ╚═╝
+#------------------------------------------------
+
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )" && declare -rx SCRIPT_DIR
+declare -rx FUNCTIONS="$SCRIPT_DIR"/scripts/functions.sh
+declare -rx PACKAGES="$SCRIPT_DIR"/scripts/pkgs.sh
+declare -rx CONFIG_FILE="$SCRIPT_DIR"/setup.conf
+if [ ! -f "$CONFIG_FILE" ]; then touch -f "$CONFIG_FILE"; else source "$CONFIG_FILE"; fi # Check if setup.conf exists, and creates it if not
+
+source "$FUNCTIONS"
+
+# START
+welcome
+start

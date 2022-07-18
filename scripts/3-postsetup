@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+source "$CONFIG_FILE"
+source "$FUNCTIONS"
+echo -e "-------------------------------------------------
+            Final Stage: Postsetup
+-------------------------------------------------
+
+Starting..."
+systemctl enable lightdm.service
+systemctl enable cups.service
+ntpd -qg
+systemctl enable ntpd.service
+systemctl enable NetworkManager.service
+systemctl enable bluetooth
+systemctl disable dhcpcd.service
+systemctl stop dhcpcd.service
+echo -e "-------------------------------------------------
+                    Clean Up
+-------------------------------------------------"
+# Removing no password sudo rights
+sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+# Adding sudo rights
+sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+rm -rf /root/Easy-A
+rm -rf /home/"$USERNAME"/Easy-A
+echo "Install Complete - Please Eject Install Media and Reboot"
