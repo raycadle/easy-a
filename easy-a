@@ -9,14 +9,26 @@
 # ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝         ╚═╝  ╚═╝
 #------------------------------------------------
 
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )" && declare -rx SCRIPT_DIR
-declare -rx FUNCTIONS="$SCRIPT_DIR"/scripts/functions.sh
-declare -rx PACKAGES="$SCRIPT_DIR"/scripts/pkgs.sh
-declare -rx CONFIG_FILE="$SCRIPT_DIR"/setup.conf
-if [ ! -f "$CONFIG_FILE" ]; then touch -f "$CONFIG_FILE"; else source "$CONFIG_FILE"; fi # Check if setup.conf exists, and creates it if not
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-source "$FUNCTIONS"
+clear
+echo -e "-------------------------------------------------
+                Welcome To...
+-------------------------------------------------
+███████╗ █████╗ ███████╗██╗   ██╗       █████╗  
+██╔════╝██╔══██╗██╔════╝██║   ██║      ██╔══██╗ 
+█████╗  ███████║███████╗╚██████╔╝█████╗███████║ 
+██╔══╝  ██╔══██║╚════██║ ╚═██╔═╝ ╚════╝██╔══██║ 
+███████╗██║  ██║███████║   ██║         ██║  ██║ 
+╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝         ╚═╝  ╚═╝ 
+-------------------------------------------------
+          An Easy Arch Installer
+-------------------------------------------------
 
-# START
-welcome
-start
+Are you ready to start?"
+read -rp "Choice (y/n): " begin
+case $begin in
+    y|Y|yes|YES|Yes|yES) echo -e "\nGreat! Starting in 3 seconds.\n"; sleep 3; bash "${SCRIPT_DIR}/scripts/1-install.sh" ;;
+    n|N|no|NO|No|nO) echo -e "\nWell then, goodbye! :)\n"; exit 1 ;;
+    *) echo -e "\nI'm sorry. I don't understand. Aborting..."; exit 1 ;;
+esac
