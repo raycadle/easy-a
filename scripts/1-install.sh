@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-FUNCTIONS="${SCRIPT_DIR}/helpers/functions.sh"
+functions="${SCRIPT_DIR}/helpers/functions.sh"
 
-source "${FUNCTIONS}"
+source "${functions}"
 
 echo -e "-------------------------------------------------
                 First Stage: Install
@@ -12,7 +12,7 @@ echo -e "-------------------------------------------------
 Starting..."
 timedatectl set-ntp true
 pacman -Sy --noconfirm --needed pacman-contrib reflector gptfdisk cryptsetup rsync
-sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+sed -i "/ParallelDownloads/,/Color/"'s/^#//' /etc/pacman.conf
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 reflector -a 48 -c "${ISO}" -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist
 
@@ -75,10 +75,12 @@ echo -e "-------------------------------------------------
                 Base Install
 -------------------------------------------------
 "
-basestrap /mnt base linux linux-firmware --noconfirm --needed
+basestrap /mnt base linux linux-firmware grub mkinitcpio --noconfirm --needed
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 cp -R "${SCRIPT_DIR}" /mnt/root/easy-a
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
+sed -i 's/HOOKS=/HOOKS=(base udev keyboard autodetect keymap consolefont modconf block encrypt lvm2 filesystems fsck)' /mnt/etc/mkinitcpio.conf
+echo "cryptdevice=UUID=$(blkid -s UUID -o value "${PART2}"):/dev/mapper/cryptroot root=/dev/cryptlv/root:allow-discards,no_read_workqueue,no_write_workqueue" >> /mnt/etc/default/grub
 
 echo -e "-------------------------------------------------
                 Stage Complete
